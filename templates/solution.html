@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="garden">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FBDS - Solutions</title>
+    <link
+      href="{{ url_for('static', filename='css/output.css') }}"
+      rel="stylesheet"
+    />
+    <link
+      href="{{ url_for('static', filename='css/animation.css') }}"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+  </head>
+  <body class="font-jetbrains">
+    <div class="navbar bg-base-100">
+      <div class="flex-1">
+        <a href="/" class="btn btn-ghost normal-case text-xl">FBDS</a>
+      </div>
+      <div class="flex-none gap-2">
+        <div class="form-control">
+          <input
+            type="text"
+            placeholder="Search"
+            class="input input-bordered w-24 md:w-auto"
+            id="searchInput"
+            onkeyup="searchContent()"
+          />
+        </div>
+        <a href="/solution" class="btn btn-outline btn-secondary">Solution</a>
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-4xl font-bold mb-12 text-center">
+        Fork Bomb Detection Solutions
+      </h1>
+
+      <div class="divider text-2xl">Choose Your Solution</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title justify-center text-2xl mb-4">AI Analysis</h2>
+            <p class="text-center mb-6">
+              Upload your code and let our AI determine if it's a fork bomb
+            </p>
+            <div class="card-actions justify-center">
+              <button class="btn btn-primary" onclick="openAIModal()">
+                Start AI Analysis
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title justify-center text-2xl mb-4">
+              Thread Analysis
+            </h2>
+            <p class="text-center mb-6">
+              Test your code in an isolated thread environment
+            </p>
+            <div class="card-actions justify-center">
+              <button class="btn btn-secondary" onclick="openThreadAnalysis()">
+                Start Analysis
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <dialog id="thread_modal" class="modal">
+      <div class="modal-box w-11/12 max-w-5xl">
+        <h3 class="font-bold text-lg mb-4">Thread Analysis</h3>
+        <form method="POST" action="/analyze_thread" id="analysisForm">
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text">Programming Language</span>
+            </label>
+            <select class="select select-bordered" name="language">
+              <option value="python">Python</option>
+            </select>
+          </div>
+
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text">Timeout (seconds)</span>
+            </label>
+            <input
+              type="number"
+              name="timeout"
+              class="input input-bordered"
+              min="1"
+              max="30"
+              value="5"
+            />
+          </div>
+
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text">Code</span>
+            </label>
+            <textarea
+              class="textarea textarea-bordered h-64 font-mono"
+              name="code"
+              placeholder="Paste your code here"
+            ></textarea>
+          </div>
+
+          <div class="modal-action">
+            <button type="submit" class="btn btn-primary">Analyze</button>
+            <button type="button" class="btn" onclick="closeThreadModal()">
+              Close
+            </button>
+          </div>
+        </form>
+        <div id="analysisResults" class="mt-4"></div>
+      </div>
+    </dialog>
+
+    <script>
+      function searchContent() {
+        const searchInput = document.getElementById("searchInput");
+        const searchText = searchInput.value.toLowerCase();
+        const cards = document.querySelectorAll(".card");
+
+        cards.forEach((card) => {
+          const cardText = card.textContent.toLowerCase();
+          if (cardText.includes(searchText)) {
+            card.style.display = "";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      }
+
+      function openThreadAnalysis() {
+        const modal = document.getElementById("thread_modal");
+        modal.showModal();
+      }
+
+      function closeThreadModal() {
+        const modal = document.getElementById("thread_modal");
+        modal.close();
+        document.getElementById("analysisResults").innerHTML = "";
+        document.getElementById("analysisForm").reset();
+      }
+
+      document
+        .getElementById("analysisForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+          const resultsDiv = document.getElementById("analysisResults");
+
+          resultsDiv.innerHTML = `
+          <div class="alert alert-info">
+            <span class="loading loading-spinner"></span>
+            Analyzing your code...
+          </div>
+        `;
+
+          try {
+            const response = await fetch("/analyze_thread", {
+              method: "POST",
+              body: formData,
+            });
+
+            const result = await response.json();
+
+            resultsDiv.innerHTML = `
+            <div class="alert ${
+              result.is_fork_bomb ? "alert-error" : "alert-success"
+            }">
+              <h4 class="font-bold">Analysis Result:</h4>
+              <p>${result.message}</p>
+            </div>
+          `;
+          } catch (error) {
+            resultsDiv.innerHTML = `
+            <div class="alert alert-error">
+              <h4 class="font-bold">Error:</h4>
+              <p>An error occurred during analysis. Please try again.</p>
+            </div>
+          `;
+            console.error("Error:", error);
+          }
+        });
+    </script>
+
+    <dialog id="ai_modal" class="modal">
+      <div class="modal-box w-11/12 max-w-5xl">
+        <h3 class="font-bold text-lg mb-4">AI Analysis</h3>
+        <form
+          method="POST"
+          action="/analyze_ai"
+          id="aiAnalysisForm"
+          enctype="multipart/form-data"
+        >
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text">Programming Language</span>
+            </label>
+            <select class="select select-bordered" name="language" required>
+              <option value="" disabled selected>Select Language</option>
+              <option value="ada">Ada</option>
+              <option value="assembly">Assembly</option>
+              <option value="awk">AWK</option>
+              <option value="bat">Batch</option>
+              <option value="c">C</option>
+              <option value="cpp">C++</option>
+              <option value="cs">C#</option>
+              <option value="erl">Erlang</option>
+              <option value="go">Go</option>
+              <option value="hs">Haskell</option>
+              <option value="java">Java</option>
+              <option value="js">JavaScript</option>
+              <option value="lisp">Lisp</option>
+              <option value="lua">Lua</option>
+              <option value="nim">Nim</option>
+              <option value="php">PHP</option>
+              <option value="pl">Perl</option>
+              <option value="ps1">PowerShell</option>
+              <option value="py">Python</option>
+              <option value="r">R</option>
+              <option value="rb">Ruby</option>
+              <option value="rs">Rust</option>
+              <option value="scm">Scheme</option>
+              <option value="sh">Shell Script</option>
+            </select>
+          </div>
+
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text">Upload Code File</span>
+            </label>
+            <input
+              type="file"
+              name="file"
+              class="file-input file-input-bordered"
+              required
+            />
+          </div>
+
+          <div class="modal-action">
+            <button type="submit" class="btn btn-primary">Analyze</button>
+            <button type="button" class="btn" onclick="closeAIModal()">
+              Close
+            </button>
+          </div>
+        </form>
+        <div id="aiAnalysisResults" class="mt-4"></div>
+      </div>
+    </dialog>
+
+    <script>
+
+      function openAIModal() {
+        const modal = document.getElementById("ai_modal");
+        modal.showModal();
+      }
+
+      function closeAIModal() {
+        const modal = document.getElementById("ai_modal");
+        modal.close();
+        document.getElementById("aiAnalysisResults").innerHTML = "";
+        document.getElementById("aiAnalysisForm").reset();
+      }
+      document
+        .getElementById("aiAnalysisForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+          const resultsDiv = document.getElementById("aiAnalysisResults");
+          resultsDiv.innerHTML = `
+        <div class="alert alert-info">
+            <span class="loading loading-spinner"></span>
+            Analyzing your code with AI...
+        </div>
+    `;
+
+          try {
+            const response = await fetch("/analyze_ai", {
+              method: "POST",
+              body: formData,
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.status === "success") {
+              resultsDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <h4 class="font-bold">AI Analysis Result:</h4>
+                    <p>${data.analysis}</p>
+                </div>
+            `;
+            } else {
+              throw new Error(data.error || "Analysis failed");
+            }
+          } catch (error) {
+            resultsDiv.innerHTML = `
+            <div class="alert alert-error">
+                <h4 class="font-bold">Error:</h4>
+                <p>${
+                  error.message ||
+                  "An error occurred during analysis. Please try again."
+                }</p>
+            </div>
+        `;
+            console.error("Error:", error);
+          }
+        });
+    </script>
+    <footer class="bg-black text-white p-8 mt-auto">
+      <div class="container mx-auto bg-black">
+        <h2 class="text-2xl font-bold mb-4 text-center">About Us</h2>
+        <div class="overflow-x-auto bg-black">
+          <table class="table w-full max-w-2xl mx-auto bg-black">
+            <thead>
+              <tr class="text-white">
+                <th>USN</th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="text-white">
+                <td>1RVU23CSE072</td>
+                <td>Apoorv Gadiya</td>
+              </tr>
+              <tr class="text-white">
+                <td>1RVU23CSE160</td>
+                <td>G Lakshmi Anugnya</td>
+              </tr>
+              <tr class="text-white">
+                <td>1RVU23CSE244</td>
+                <td>Maanya Praveen</td>
+              </tr>
+              <tr class="text-white">
+                <td>1RVU23CSE413</td>
+                <td>Satyam Goyal</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

