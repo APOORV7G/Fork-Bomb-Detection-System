@@ -29,7 +29,7 @@ A web-based system to detect and analyze potential fork bomb code snippets acros
 
 1. Clone the repository
 ```bash
-git clone [https://github.com/APOORV7G/Fork-Bomb-Detection-System.git](https://github.com/APOORV7G/Fork-Bomb-Detection-System.git)
+git clone https://github.com/APOORV7G/Fork-Bomb-Detection-System.git
 
 cd fork-bomb-detection-system
 ```
